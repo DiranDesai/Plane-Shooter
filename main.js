@@ -1,15 +1,34 @@
 const myCanvas = document.querySelector("#myCanvas");
 const ctx = myCanvas.getContext("2d");
 
+// Game variables
+let leftArrow,
+  rightArrow,
+  fireArrow = false;
 
+let player = {
+  x: myCanvas.width / 2,
+  y: myCanvas.height - 100,
+  w: 30,
+  score: 0,
+};
 
+const bullets = [];
 
-let leftArrow = false;
-let rightArrow = false;
-let fireArrow = false;
+let bullet = {
+  x: player.x + 10,
+  y: player.y - 10,
+};
 
+let enemies = [];
+let enemyBullets = [];
 let enemiesRow = 1;
+let enemyXpos;
+let enemyYpos;
+let enemyBulletStatus = false;
 
+
+// Handling keyboard events
 document.addEventListener("keydown", (e) => {
   if (e.keyCode == 37) {
     leftArrow = true;
@@ -30,77 +49,91 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
-let player = {
-  x: myCanvas.width / 2,
-  y: myCanvas.height - 100,
-  fillColor: "teal"
-}
-
-let playerWidth = 30;
-
-const bullets = [];
-let bullet = {
-  x: player.x + 10,
-  y: player.y - 10
-}
-
-
+// Draw player
 function drawPlayer() {
   ctx.drawImage(playerImg2, player.x, player.y);
 }
 
-
-function draw(){
-  drawPlayer();
-  drawEnemies();
-  //createBullets();
-}
-
-function update() {
-  movePlayer();
-  loadBullets();
-  fireBullets();
-  moveEnemies();
-  moveEnemyBullets();
-  bulletCollision();
-
-  if (enemyBulletStatus) {
-    enemyTargeting();
-  }
-  
-}
-
+// Move player
 function movePlayer() {
-  if(leftArrow) {
+  if (leftArrow) {
     player.x -= 5;
   } else if (rightArrow) {
     player.x += 5;
   }
 }
 
+// Create bullets
 function createBullets() {
   bulletSound.play();
   bulletSound.currentTime = 0;
   bullets.push({
     x: player.x + 10,
-    y: player.y - 10
-  })
+    y: player.y - 10,
+  });
 }
 
-let enemies = [];
+// Draw bullets
+function drawBullets() {
+  for (let i = 0; i < bullets.length; i++) {
+    let bullet = bullets[i];
+    ctx.drawImage(bullImg, bullet.x, bullet.y);
+  }
+}
 
-function createEnemies() {
+// Check when bullet hits enemy
+function bulletCollision() {
   for (let i = 0; i < enemiesRow; i++) {
-    enemies[i] = [];
-    for (let j = 0; j < 5; j++) {
-      enemies[i].push({
-        x: Math.floor(Math.random() * myCanvas.width),
-        y: -10
-       })            
+    let enemy = enemies[i];
+    for (let j = 0; j < enemy.length; j++) {
+      let enem = enemy[j];
+      for (let k = 0; k < bullets.length; k++) {
+        let bullet = bullets[k];
+        if (
+          bullet.y + player.w > enem.y &&
+          bullet.y - player.w < enem.y + player.w &&
+          bullet.x + player.w > enem.x &&
+          bullet.x - player.w < enem.x
+        ) {
+          explodeSound.play();
+          explodeSound.currentTime = 0;
+          player.score++;
+          enemies[i].splice(j, 1);
+          bullets.splice(k, 1);
+        }
+      }
     }
   }
 }
 
+// Move bullets
+function moveBullets() {
+  for (let i = 0; i < bullets.length; i++) {
+    let bullet = bullets[i];
+    if (bullet.y <= 10) {
+      bullets.splice(i, 1);
+    }
+    bullet.y -= 5;
+  }
+}
+
+// Create enemies
+function createEnemies() {
+  for (let i = 0; i < enemiesRow; i++) {
+    enemies[i] = [];
+    for (let j = 0; j < 5; j++) {
+      let enemX = Math.floor(Math.random() * myCanvas.width) - 50;
+      enemies[i].push({
+        x: enemX < 50 ? 50 : enemX,
+        y: 100,
+      });
+    }
+  }
+}
+
+createEnemies();
+
+// Draw enemies
 function drawEnemies() {
   for (let i = 0; i < enemiesRow; i++) {
     let enemy = enemies[i];
@@ -112,117 +145,78 @@ function drawEnemies() {
           if (enem.x + 50 > eachEnemy.x && enem.x - 50 < eachEnemy.x) {
             enemies[0].splice(k, 1);
           }
-        }
-      }
+        }      }
       ctx.drawImage(enemyImg, enem.x, enem.y);
     }
-    
   }
 }
 
+// Move enemies
 function moveEnemies() {
   for (let i = 0; i < enemiesRow; i++) {
     let enemy = enemies[i];
     for (let j = 0; j < enemy.length; j++) {
       let enem = enemy[j];
-      if (Math.round(enem.y) == 200 && enemies[0].length < 10) {
-        // //createEnemies();
-        // enemiesRow += 1;
-        console.log(123);
+      if (Math.round(enem.y) == 200 || enemies[0].length < 5 && enemies[0].length < 20) {
+        let enemX = Math.floor(Math.random() * myCanvas.width) - 50;
         enemies[0].push({
-          x: Math.floor(Math.random() * myCanvas.width),
-          y: -10
-        })
-
+          x: enemX < 50 ? 50 : enemX,
+          y: 50,
+        });
       }
-      enem.y += 0.2
-    }
-    
-  }
-}
 
-
-
-
-
-
-createEnemies();
-
-
-function loadBullets() {
-  for (let i = 0; i < bullets.length; i++) {
-    let bullet = bullets[i];
-    ctx.drawImage(bullImg, bullet.x, bullet.y);
-  }
-}
-
-function bulletCollision() {
-  for (let i = 0; i < enemiesRow; i++) {
-    let enemy = enemies[i];
-    for (let j = 0; j < enemy.length; j++) {
-      let enem = enemy[j];
-      for (let k = 0; k < bullets.length; k++) {
-        let bullet = bullets[k];
-        if (bullet.y + playerWidth >  enem.y && bullet.y - playerWidth < enem.y + playerWidth && bullet.x + playerWidth > enem.x && bullet.x - playerWidth < enem.x) {
-          explodeSound.play();
-          enemies[i].splice(j, 1);
-        }
+      if (enem.y > myCanvas.height) {
+        enemies[0].splice(j, 1);
       }
+
+      enem.y += 1;
     }
   }
 }
 
-let enemyBullets = [];
-
-let enemyBulletStatus = false;
-
-// if (enemyBulletStatus) {
-//   console.log("YES!");
-//   setInterval(() => {
-//     drawEnemyBullets();
-//   }, 1000);
-// }
-
-setInterval(() => {
-  if (enemyBulletStatus) {
-    console.log("YES!");
-    enemyBullets.push({
-      x: enemyXpos,
-      y: enemyYpos
-    })
-    drawEnemyBullets();
-  }
-}, 1000);
-
-
-let enemyXpos;
-let enemyYpos;
-
+// Enemy targeting
 function enemyTargeting() {
   for (let i = 0; i < enemiesRow; i++) {
     let enemy = enemies[i];
     for (let j = 0; j < enemy.length; j++) {
       const enem = enemy[j];
-      if (enem.x + playerWidth > player.x && enem.x - playerWidth < player.x) {
+      if (enem.x + player.w > player.x && enem.x - player.w < player.x) {
         console.log("Shoot!");
-        enemyXpos = enem.x
-        enemyYpos = enem.y
-        enemyBulletStatus = true
+        enemyXpos = enem.x;
+        enemyYpos = enem.y;
+        enemyBulletStatus = true;
       }
     }
-    
   }
 }
 
-
+// Move enemy bullets
 function moveEnemyBullets() {
   for (let i = 0; i < enemyBullets.length; i++) {
     let bullet = enemyBullets[i];
-    bullet.y += 3
+    if (bullet.y > myCanvas.height) {
+      enemyBullets.splice(i, 1);
+    }
+    bullet.y += 3;
   }
-
 }
 
+// Enemy bullet collision
+function enemyBulletCollision() {
+  for (let i = 0; i < enemyBullets.length; i++) {
+    let bullet = enemyBullets[i];
+    if (
+      bullet.y + player.w > player.y &&
+      bullet.y - player.w < player.y + player.w &&
+      bullet.x + player.w > player.x &&
+      bullet.x - player.w < player.x
+    ) {
+      explodeSound.play();
+    }
+  }
+}
+
+// Draw enemy bullets
 function drawEnemyBullets() {
   console.log(enemyBullets);
   for (let i = 0; i < enemyBullets.length; i++) {
@@ -231,20 +225,55 @@ function drawEnemyBullets() {
   }
 }
 
-
-function fireBullets() {
-  for (let i = 0; i < bullets.length; i++) {
-    let bullet = bullets[i];
-    if (bullet.y <= 10) {
-      bullets.splice(i, 1);
+// Enemy bullets interval
+function enemyBulletsTimer() {
+  setInterval(() => {
+    if (enemyBulletStatus) {
+      console.log("YES!");
+      enemyBullets.push({
+        x: enemyXpos + 10,
+        y: enemyYpos + 30,
+      });
+      drawEnemyBullets();
+      enemyBulletStatus = false;
     }
-    bullet.y -= 3;
-  }
+  }, 1500);
+}
+
+enemyBulletsTimer();
+
+// Draw text
+function drawText() {
+  ctx.fillStyle = "teal";
+  ctx.font = "30px fantasy";
+  ctx.fillText(`Score: ${player.score}`, myCanvas.width - 120, 50);
 }
 
 
-function loop(){
+// Draw all objects game
+function draw() {
+  drawPlayer();
+  drawBullets();
+  drawEnemies();
+  drawText();
+}
+
+// Update running rapidly
+function update() {
+  movePlayer();
+  moveBullets();
+  moveEnemies();
+  moveEnemyBullets();
+  bulletCollision();
+  enemyTargeting();
+  drawEnemyBullets();
+  enemyBulletCollision();
+}
+
+function loop() {
+  // Clearing the canvas
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
   draw();
   update();
   requestAnimationFrame(loop);

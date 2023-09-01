@@ -274,7 +274,7 @@ enemyBulletsTimer();
 function drawText() {
   ctx.fillStyle = "teal";
   ctx.font = "30px fantasy";
-  ctx.fillText(`Score: ${player.score}`, myCanvas.width - 120, 50);
+  ctx.fillText(`Score: ${player.score}`, myCanvas.width - 130, 50);
 }
 
 

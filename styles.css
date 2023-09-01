@@ -1,9 +1,9 @@
 #myCanvas{
-    border: 10px solid #ccc;
+    border: 10px solid #673AB7;
     background-color: #f6f6f6;
     display: block;
     margin: 0 auto;
-    max-width: 300px;
+    max-width: 320px;
     max-height: 50%;
 }
 
@@ -17,19 +17,26 @@
 .controls .control{
     width: 100px;
     height: 60px;
+    color: white;
+    border: none;
+    background-color: #673AB7;
 }
 .controls .control i{
     font-size: 3rem;
     font-weight: 700;
 }
-.control .fire-control{
-    margin-top: 2rem;
+.controls .fire-control{
+    position: relative;
+    top: 50px;
+    left: 300px;
     border-radius: 50%;
     width: 50px;
     height: 50px;
+    color: white;
+    background: red;
 }
 .controls .left-control{
-
+    
 }
 .controls .right-control{
     

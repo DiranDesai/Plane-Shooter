@@ -52,19 +52,19 @@ document.addEventListener("keyup", (e) => {
 });
 
 // Handling button controls
-leftControl.addEventListener("focus", () => {
+leftControl.addEventListener("touchstart", () => {
   leftArrow = true
 });
 
-rightControl.addEventListener("focus", () => {
+rightControl.addEventListener("touchstart", () => {
   rightArrow = true
 });
 
-leftControl.addEventListener("blur", () => {
+leftControl.addEventListener("touchend", () => {
   leftArrow = false;
 });
 
-rightControl.addEventListener("blur", () => {
+rightControl.addEventListener("touchend", () => {
   rightArrow = false;
 });
 

@@ -6,3 +6,21 @@
     max-width: 300px;
     max-height: 50%;
 }
+
+.controls .controls-btn{
+    width: 210px;
+    margin: auto;
+    margin-top: 2cm;
+    display: flex;
+    gap: 20px;
+}
+.controls .control{
+    width: 100px;
+    height: 60px;
+}
+.controls .left-control{
+
+}
+.controls .right-control{
+    
+}

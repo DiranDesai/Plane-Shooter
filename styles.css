@@ -3,4 +3,6 @@
     background-color: #f6f6f6;
     display: block;
     margin: 0 auto;
+    max-width: 300px;
+    max-height: 50%;
 }

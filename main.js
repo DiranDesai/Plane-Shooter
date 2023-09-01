@@ -1,4 +1,6 @@
 const myCanvas = document.querySelector("#myCanvas");
+const leftControl = document.querySelector(".left-control");
+const rightControl = document.querySelector(".right-control");
 const ctx = myCanvas.getContext("2d");
 
 // Game variables
@@ -47,6 +49,23 @@ document.addEventListener("keyup", (e) => {
   } else if (e.keyCode == 13) {
     upArrow = false;
   }
+});
+
+// Handling button controls
+leftControl.addEventListener("focus", () => {
+  leftArrow = true
+});
+
+rightControl.addEventListener("focus", () => {
+  rightArrow = true
+});
+
+leftControl.addEventListener("blur", () => {
+  leftArrow = false;
+});
+
+rightControl.addEventListener("blur", () => {
+  rightArrow = false;
 });
 
 // Draw player

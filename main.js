@@ -1,6 +1,7 @@
 const myCanvas = document.querySelector("#myCanvas");
 const leftControl = document.querySelector(".left-control");
 const rightControl = document.querySelector(".right-control");
+const fireControl = document.querySelector(".fire-control");
 const ctx = myCanvas.getContext("2d");
 
 // Game variables
@@ -67,6 +68,14 @@ leftControl.addEventListener("touchend", () => {
 rightControl.addEventListener("touchend", () => {
   rightArrow = false;
 });
+
+fireControl.addEventListener("touchstart", () => {
+  createBullets();
+});
+
+
+
+
 
 // Draw player
 function drawPlayer() {

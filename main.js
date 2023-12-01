@@ -4,6 +4,17 @@ const rightControl = document.querySelector(".right-control");
 const fireControl = document.querySelector(".fire-control");
 const ctx = myCanvas.getContext("2d");
 
+console.log(myCanvas.width);
+
+const windowWidth = window.innerWidth;
+
+if (windowWidth > 1000) {
+  const controls = [leftControl, rightControl, fireControl];
+  controls.forEach(control => {
+    control.style.display = "none";
+  });
+}
+
 // Game variables
 let leftArrow,
   rightArrow,
@@ -84,9 +95,9 @@ function drawPlayer() {
 
 // Move player
 function movePlayer() {
-  if (leftArrow) {
+  if (leftArrow && player.x >= 0) {
     player.x -= 5;
-  } else if (rightArrow) {
+  } else if (rightArrow && player.x < myCanvas.width - 50) {
     player.x += 5;
   }
 }
@@ -97,7 +108,7 @@ function createBullets() {
   bulletSound.currentTime = 0;
   bullets.push({
     x: player.x + 10,
-    y: player.y - 10,
+    y: player.y - 10, 
   });
 }
 
@@ -177,7 +188,7 @@ function drawEnemies() {
       ctx.drawImage(enemyImg, enem.x, enem.y);
     }
   }
-}
+} 
 
 // Move enemies
 function moveEnemies() {
@@ -185,7 +196,7 @@ function moveEnemies() {
     let enemy = enemies[i];
     for (let j = 0; j < enemy.length; j++) {
       let enem = enemy[j];
-      if (Math.round(enem.y) == 200 || enemies[0].length < 5 && enemies[0].length < 20) {
+      if (Math.round(enem.y) == 200 || enemies[0].length < 5) {
         let enemX = Math.floor(Math.random() * myCanvas.width) - 50;
         enemies[0].push({
           x: enemX < 50 ? 50 : enemX,
@@ -209,7 +220,6 @@ function enemyTargeting() {
     for (let j = 0; j < enemy.length; j++) {
       const enem = enemy[j];
       if (enem.x + player.w > player.x && enem.x - player.w < player.x) {
-        console.log("Shoot!");
         enemyXpos = enem.x;
         enemyYpos = enem.y;
         enemyBulletStatus = true;
@@ -246,7 +256,6 @@ function enemyBulletCollision() {
 
 // Draw enemy bullets
 function drawEnemyBullets() {
-  console.log(enemyBullets);
   for (let i = 0; i < enemyBullets.length; i++) {
     const enemyBullet = enemyBullets[i];
     ctx.drawImage(bullImg, enemyBullet.x, enemyBullet.y);
@@ -254,10 +263,9 @@ function drawEnemyBullets() {
 }
 
 // Enemy bullets interval
-function enemyBulletsTimer() {
+ function enemyBulletsTimer() {
   setInterval(() => {
     if (enemyBulletStatus) {
-      console.log("YES!");
       enemyBullets.push({
         x: enemyXpos + 10,
         y: enemyYpos + 30,

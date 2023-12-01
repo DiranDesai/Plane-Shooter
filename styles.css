@@ -1,11 +1,13 @@
 #myCanvas{
-    border: 10px solid #673AB7;
+    border: 10px solid #2862ad;
     background-color: #f6f6f6;
     display: block;
     margin: 0 auto;
-    max-width: 320px;
-    max-height: 50%;
+    width: 500px;
+    max-height: 40%;
+    border-radius: 10%;
 }
+
 
 .controls .controls-btn{
     width: 210px;
